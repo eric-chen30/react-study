@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- 引入React核心库 -->
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <!-- 引入React DOM库 -->
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- babel引入，用于将jsx转为js -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      // let that;
+      class WeatherComponent extends React.Component {
+        /** 构造器调用几次？——只调用一次 **/
+        constructor(props) {
+          super(props)
+          // 初始化状态
+          this.state = { isHot: false, wind: 'light' };
+          // that = this;
+          /**
+           * bind: 返回新函数、改变this的指向
+           * */
+          // 解决changeWeather中的this指向问题
+          this.changeWeather = this.changeWeather.bind(this);
+          /** 如果这样写需要把onClick中的changeWeather方法改为demo方法 */
+          // this.demo = this.changeWeather.bind(this);
+        }
+
+        /** render调用几次？——1+n次，每次更新都会调用render **/
+        render() {
+          const { isHot, wind } = this.state
+          /* 写法1 */
+          return <h1 onClick={this.changeWeather}>It is {isHot ? 'hot' : 'not hot'} right now.——{wind}</h1>
+          /* 写法2 */
+          // return <h1 onClick={() => this.setState({ isHot: !isHot })}>It is {isHot ? 'hot' : 'not hot'} right now.</h1>
+        }
+
+        // 类组件方法
+        /** render调用几次？——点击事件的次数 **/
+        changeWeather() {
+          // changeWeather放在Weather的原型对象上，供实例使用
+          // 由于changeWeather是作为onClick的回调函数，所以不是通过实例调用的，是直接调用
+          // 类中的方法默认开启了局部的严格模式，所以changeWeather中的this指向undefined
+
+          /** 严重注意：状态state不可以直接更改， 下面就是直接更改 **/
+          // console.log(this);
+          // this.state.isHot = !this.state.isHot;
+          // console.log(this.state.isHot);
+          // 需要强制更新，否则数据更新视图不更新
+          // this.forceUpdate();
+
+          /**  严重注意：状态通过setState方法更改或更新，且该更新是一种合并更新，不会覆盖掉原有的数据，而是更新到新的状态  **/
+          this.setState({ isHot: !this.state.isHot });
+        }
+      }
+      ReactDOM.render(<WeatherComponent />, document.getElementById('root'))
+
+      /**
+       * 问题：// Cannot read properties of undefined (reading 'setState')
+       * 解决：use strict模式下，this指向undefined，导致setState报错， 想用组件实例的this需要定义变量并在constructor中赋值
+       * */
+      // function demo() {
+      //   console.log(that.state.isHot)
+      // }
+    </script>
+  </body>
+</html>

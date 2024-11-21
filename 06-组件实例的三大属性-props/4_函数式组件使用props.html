@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- 引入React核心库 -->
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <!-- 引入React DOM库 -->
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- babel引入，用于将jsx转为js -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!--  引入prop-types，用于对props进行类型检查  -->
+    <script src="https://unpkg.com/prop-types@15.6/prop-types.js"></script>
+  </head>
+  <body>
+    <div id="test1"></div>
+
+    <script type="text/babel">
+      // 函数式组件Person
+      function Person(props) {
+        const { name, age, gender } = props;
+        return (
+          <ul>
+            <li>姓名：{name}</li>
+            <li>年龄：{age}</li>
+            <li>性别：{gender}</li>
+          </ul>
+        )
+      }
+
+      Person.propTypes = {
+        name: PropTypes.string.isRequired,
+        age: PropTypes.number,
+        gender: PropTypes.oneOf(['男', '女']).isRequired,
+      }
+
+      Person.defaultProps = {
+        name: '未知',
+        age: 18,
+        gender: '女',
+      }
+
+      // 渲染组件到页面
+      ReactDOM.render(<Person name="XM" age={25} />, document.getElementById('test1'));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2_受控组件</title>
+  <!-- 引入React核心库 -->
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <!-- 引入React DOM库 -->
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <!-- babel引入，用于将jsx转为js -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+  class Login extends React.Component {
+
+    state = {
+      username: '', // 用户名
+      password: ''  // 密码
+    }
+
+    saveUsername = (event) => {
+      this.setState({ username: event.target.value });
+    }
+
+    savePassword = (event) => {
+      this.setState({ password: event.target.value });
+    }
+
+    // event.preventDefault();阻止默认行为，如提交表单
+    handleSubmit = (event) => {
+      event.preventDefault();
+      const { usernameInput, passwordInput } = this;
+      alert(`用户名：${usernameInput.value}，密码：${passwordInput.value}`);
+    }
+
+    render() {
+      return (
+        <form onSubmit={this.handleSubmit}>
+          用户名：<input onChange={this.saveUsername} type="text" name="username" /><br />
+          密码：<input onChange={this.savePassword} type="password" name="password" /><br />
+          <button type="submit">登录</button>
+        </form>
+      )
+    }
+  }
+
+  ReactDOM.render(<Login />, document.getElementById('root'));
+</script>
+</body>
+</html>

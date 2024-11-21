@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- 引入React核心库 -->
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <!-- 引入React DOM库 -->
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- babel引入，用于将jsx转为js -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+      .title {
+        background-color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 容器 -->
+    <div id="test"></div>
+
+    <!-- 在script标签中使用babel来编译jsx -->
+    <script type="text/babel">
+      const myId = 'Ericchen'
+      const myData = 'Hello, Eric!'
+
+      // 1.创建虚拟DOM
+      const VDOM = (
+        <div className="title" id={myId}>
+          <span style={{ color: 'yellow', fontSize: '24px' }}>{myData.toLocaleUpperCase}</span>
+        </div>
+      )
+
+      // 2.渲染虚拟DOM到页面
+      ReactDOM.render(VDOM, document.getElementById('test'))
+
+      /**
+       * 1, 定义虚拟DOM时, 不要写引号
+       * 2, 标签中混入JS表达式时, 用{}括起来
+       * 3, 样式的类名指定不要用class, 而是用className
+       * 4, 内联样式,要用style={{ key: value }}的形式来写
+       * 5, 只有一个根标签
+       * 6, 标签必须闭合
+       * 7, 标签首字母：
+       *    （1）如果以小写字母开头，该标签被认为是html标签，若html中无此标签，则会报错
+       *    （2）如果以大写字母开头，react就认为这是一个组件
+       */
+    </script>
+  </body>
+</html>

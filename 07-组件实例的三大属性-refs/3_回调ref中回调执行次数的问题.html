@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>回调ref中回调执行次数的问题</title>
+    <!-- 引入React核心库 -->
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <!-- 引入React DOM库 -->
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- babel引入，用于将jsx转为js -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      class MyComponent extends React.Component {
+        state = {
+          isGood: false
+        }
+
+        showData = () => {
+          const { input1 } = this;
+          console.log('@', input1);
+        }
+
+        saveInput = (node) => {
+          this.input1 = node;
+          console.log('@_@', node);
+        }
+
+        /**
+         * 如果ref回调函数是以内联函数的方式定义的，在更新过程中会被执行两次，第一次传入参数是null，第二次传入参数是真实的DOM节点。
+         */
+
+        render() {
+          return (
+            <div>
+              <h1>今天天气真{   this.state.isGood ? '好' : '不好' }</h1>
+              <input ref={this.saveInput} type="text" placeholder="请输入左侧数据" />
+              {/*<input ref={ currentNode => {this.input1 = currentNode; console.log('@_@', currentNode)} } type="text" placeholder="请输入左侧数据" />*/}
+              <button onClick={this.showData}>点击我提示左侧输入框数据</button>
+              <button onClick={() => {
+                this.setState({ isGood: !this.state.isGood })
+              }}>点击我切换天气</button>
+            </div>
+          )
+        }
+      }
+
+      ReactDOM.render(<MyComponent />, document.getElementById('root'));
+    </script>
+  </body>
+</html>
