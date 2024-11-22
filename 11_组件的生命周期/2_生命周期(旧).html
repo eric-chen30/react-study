@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>生命周期(旧)</title>
+    <!-- 引入React核心库 -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@17/umd/react.development.js"
+    ></script>
+    <!-- 引入React DOM库 -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+    ></script>
+    <!-- babel引入，用于将jsx转为js -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      /**
+       * 1.初始化阶段：由ReactDOM.render()方法触发，在此阶段，React会创建组件实例，并调用其构造器（constructor）方法，并将props和state传递给组件。
+       * 2.挂载阶段：由ReactDOM.render()方法触发，在此阶段，React会调用组件的render()方法，并将生成的虚拟DOM渲染到页面上。
+       * 3.更新阶段：当组件的props或state发生变化时，React会调用组件的shouldComponentUpdate()方法，判断是否需要更新组件。如果需要更新，则会调用组件的componentWillUpdate()方法，更新组件的props和state，并调用render()方法生成新的虚拟DOM，然后React会调用组件的componentDidUpdate()方法，通知组件更新完毕。
+       * 4.卸载阶段：当组件从DOM中移除时，React会调用组件的componentWillUnmount()方法，通知组件即将卸载。
+       */
+
+      class Count extends React.Component {
+        constructor(props) {
+          console.log("构造器——constructor");
+          super(props);
+          this.state = {
+            count: 0,
+          };
+        }
+
+        add = () => {
+          const { count } = this.state;
+          this.setState({ count: count + 1 });
+        };
+
+        // 强制更新组件的回调
+        force = () => {
+          console.log("强制更新组件——forceUpdate");
+          this.forceUpdate();
+        };
+
+        death = () => {
+          ReactDOM.unmountComponentAtNode(document.getElementById("root"));
+        };
+
+        // 组件将要挂载
+        componentWillMount() {
+          console.log("组件将要挂载——componentWillMount");
+        }
+
+        // 组件挂载完毕
+        componentDidMount() {
+          console.log("组件挂载完成——componentDidMount");
+        }
+
+        // 组件将要卸载
+        componentWillUnmount() {
+          console.log("组件卸载——componentWillUnmount");
+        }
+
+        // 控制组件“阀门”
+        shouldComponentUpdate() {
+          console.log("组件“阀门”——shouldComponentUpdate");
+          return true;
+        }
+
+        // 组件将要更新
+        componentWillUpdate() {
+          console.log("组件将要更新——componentWillUpdate");
+        }
+
+        // 组件更新完毕
+        componentDidUpdate() {
+          console.log("组件更新完毕——componentDidUpdate");
+        }
+
+        render() {
+          console.log("渲染——render");
+          const { count } = this.state;
+          return (
+            <div>
+              <h1>当前求和为: {count}</h1>
+              <button onClick={this.add}>点我加1</button>&nbsp;
+              <button onClick={this.death}>卸载组件</button>
+              <button onClick={this.force}>强制更新组件</button>
+            </div>
+          );
+        }
+      }
+
+      class ParentComponent extends React.Component {
+        state = {
+          componentName: "😋",
+        };
+
+        changeName = () => {
+          this.setState({
+            componentName: "😁",
+          });
+        };
+
+        render() {
+          return (
+            <div>
+              <h1>我是父组件</h1>
+              <button onClick={this.changeName}>改名</button>
+              <ChildComponent componentName={this.state.componentName} />
+            </div>
+          );
+        }
+      }
+
+      class ChildComponent extends React.Component {
+        // 子组件将要接收父组件的props(接收新的props时才会调用)
+        componentWillReceiveProps(props) {
+          console.log("子组件接收到父组件的props——componentWillReceiveProps");
+        }
+
+        // 子组件是否需要更新
+        shouldComponentUpdate() {
+          console.log("子组件“阀门”——shouldComponentUpdate");
+          return true;
+        }
+
+        // 子组件将要更新
+        componentWillUpdate() {
+          console.log("子组件将要更新——componentWillUpdate");
+        }
+
+        // 子组件更新完毕
+        componentDidUpdate() {
+          console.log("子组件更新完毕——componentDidUpdate");
+        }
+
+        render() {
+          console.log("子组件渲染——render");
+          return (
+            <div>
+              <h1>我是子组件，{this.props.componentName}</h1>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<ParentComponent />, document.getElementById("root"));
+    </script>
+  </body>
+</html>

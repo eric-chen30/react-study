@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1_引出生命周期</title>
+  <!-- 引入React核心库 -->
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <!-- 引入React DOM库 -->
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <!-- babel引入，用于将jsx转为js -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+  class LifeComponent extends React.Component {
+    // 初始化状态
+    state = {
+      opacity: 1
+    }
+
+    disappear = () => {
+      // 卸载组件
+      ReactDOM.unmountComponentAtNode(document.getElementById('root'))
+    };
+
+    // 组件挂载
+    componentDidMount() {
+      this.timer = setInterval(() => {
+        console.log('@');
+        let opacity = this.state.opacity - 0.1;
+        if (opacity <= 0) {
+          opacity = 1;
+        }
+        this.setState({ opacity });
+      }, 200);
+    }
+
+    // 组件卸载
+    componentWillUnmount() {
+      clearInterval(this.timer);
+    }
+
+    // 初始化渲染、状态更新
+    render() {
+      const { opacity } = this.state;
+      return (
+        <div>
+          <h1 style={{ opacity: opacity }}>我快要消失了</h1>
+          <button onClick={ this.disappear }>不活了</button>
+        </div>
+      )
+    }
+  }
+
+  ReactDOM.render(<LifeComponent />, document.getElementById('root'));
+</script>
+</body>
+</html>

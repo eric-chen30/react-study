@@ -51,11 +51,11 @@
     /** 必须拿函数作为触发事件的回调 **/
     render() {
       return (
-              <form onSubmit={this.handleSubmit}>
-                用户名：<input onChange={this.saveForm('username')} type="text" name="username" /><br />
-                密码：<input onChange={this.saveForm('password')} type="password" name="password" /><br />
-                <button type="submit">登录</button>
-              </form>
+        <form onSubmit={this.handleSubmit}>
+          用户名：<input onChange={this.saveForm('username')} type="text" name="username" /><br />
+          密码：<input onChange={this.saveForm('password')} type="password" name="password" /><br />
+          <button type="submit">登录</button>
+        </form>
       )
     }
   }
