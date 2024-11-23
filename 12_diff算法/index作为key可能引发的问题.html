@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>index作为key可能引发的问题</title>
+
+    <!-- 引入React核心库 -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@17/umd/react.development.js"
+    ></script>
+    <!-- 引入React DOM库 -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+    ></script>
+    <!-- babel引入，用于将jsx转为js -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      /* 
+            index作为key可能引发的问题:
+                1, 若对数据进行：逆序添加、删除、修改等破坏顺序操作：
+                    会产生没必要的真实DOM更新，导致性能下降。
+                2, 如果结构中还包含输入类的DOM：
+                    由于虚拟DOM的diff算法比较无法比较如input框的value等属性，会导致界面问题
+                3，注意：如果不存在对数据的逆序添加和删除等破坏顺序操作，index作为key也不会有问题
+        */
+
+      class Person extends React.Component {
+        state = {
+          persons: [
+            { id: 1, name: "张三", age: 20 },
+            { id: 2, name: "王五", age: 30 },
+          ],
+        };
+
+        handleAddPerson = () => {
+          const { persons } = this.state;
+          const person = { id: 3, name: "李四", age: 25 };
+          this.setState({ persons: [person, ...persons] });
+        };
+
+        render() {
+          return (
+            <div>
+              <h2>人员信息展示</h2>
+              <button onClick={this.handleAddPerson}>新增人员</button>
+              <h3>使用index作为key</h3>
+              <ul>
+                {this.state.persons.map((person, index) => (
+                  <li key={index}>
+                    {person.name} - {person.age}
+                    <input type="text" />
+                  </li>
+                ))}
+                
+              </ul>
+              <hr/>
+              <hr/>
+              <h3>使用id作为key</h3>
+              <ul>
+                {this.state.persons.map((person) => (
+                  <li key={person.id}>
+                    {person.name} - {person.age}
+                    <input type="text" />
+                  </li>
+                ))}
+              </ul>
+              
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<Person />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
