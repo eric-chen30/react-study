@@ -45,14 +45,23 @@
           ReactDOM.unmountComponentAtNode(document.getElementById("root"));
         };
 
-        // 组件将要挂载
-        UNSAFE_componentWillMount() {
-          console.log("组件将要挂载——UNSAFE_componentWillMount");
+        // option + shift + A 块状注释
+        // 如果你定义了 static getDerivedStateFromProps，React 会在初始挂载和后续更新时调用 render 之前调用它。它应该返回一个对象来更新 state，或者返回 null 就不更新任何内容。
+        // 派生 state 会导致代码冗长，并使你的组件难以理解。请尽量避免使用它。
+        static getDerivedStateFromProps(props, state) {
+          console.log("获取props——getDerivedStateFromProps", props, state);
+          return props;
+        }
+
+        // 更新之前获取快照
+        getSnapshotBeforeUpdate(preProps, preState) {
+          console.log("获取快照——getSnapshotBeforeUpdate", preProps, preState);
+          return "快照 by Vooey";
         }
 
         // 组件挂载完毕
         componentDidMount() {
-          console.log("组件挂载完成——componentDidMount");
+          console.log("组件挂载完成——componentDidMount", this.state);
         }
 
         // 组件将要卸载
@@ -66,14 +75,14 @@
           return true;
         }
 
-        // 组件将要更新
-        UNSAFE_componentWillUpdate() {
-          console.log("组件将要更新——UNSAFE_componentWillUpdate");
-        }
-
         // 组件更新完毕
-        componentDidUpdate() {
-          console.log("组件更新完毕——componentDidUpdate");
+        componentDidUpdate(preProps, preState, snapshotValue) {
+          console.log(
+            "组件更新完毕——componentDidUpdate",
+            preProps,
+            preState,
+            snapshotValue
+          );
         }
 
         render() {
@@ -90,44 +99,10 @@
         }
       }
 
-      class ParentComponent extends React.Component {
-        state = {
-          componentName: "😋",
-        };
-
-        changeName = () => {
-          this.setState({
-            componentName: "😁",
-          });
-        };
-
-        render() {
-          return (
-            <div>
-              <h1>我是父组件</h1>
-              <button onClick={this.changeName}>改名</button>
-              <ChildComponent componentName={this.state.componentName} />
-            </div>
-          );
-        }
-      }
-
-      class ChildComponent extends React.Component {
-        // 子组件将要接收父组件的props(接收新的props时才会调用)
-        UNSAFE_componentWillReceiveProps(props) {
-          console.log("子组件接收到父组件的props——UNSAFE_componentWillReceiveProps");
-        }
-        render() {
-          console.log("子组件渲染——render");
-          return (
-            <div>
-              <h1>我是子组件，{this.props.componentName}</h1>
-            </div>
-          );
-        }
-      }
-
-      ReactDOM.render(<Count />, document.getElementById("root"));
+      ReactDOM.render(
+        <Count count={30} name="张三" />,
+        document.getElementById("root")
+      );
     </script>
   </body>
 </html>
